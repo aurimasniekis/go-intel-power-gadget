@@ -13,74 +13,74 @@ import (
 
 type Frequency float32
 type FrequencyStat struct {
-	Mean Frequency
-	Min  Frequency
-	Max  Frequency
+	Mean Frequency `json:"mean"`
+	Min  Frequency `json:"min"`
+	Max  Frequency `json:"max"`
 }
 
 type Watts float32
 type Joules float32
 
 type Power struct {
-	Watts  Watts
-	Joules Joules
+	Watts  Watts  `json:"watts"`
+	Joules Joules `json:"joules"`
 }
 
 type Temperature float32
 type TemperatureStat struct {
-	Mean Temperature
-	Min  Temperature
-	Max  Temperature
+	Mean Temperature `json:"mean"`
+	Min  Temperature `json:"min"`
+	Max  Temperature `json:"max"`
 }
 
 type Utilization float32
 
 type IntelPowerGadgetPackage struct {
-	PackageNo    int
-	PackageCores int
+	PackageNo    int `json:"package_no"`
+	PackageCores int `json:"package_cores"`
 
-	IaBaseFrequency Frequency
-	IaMaxFrequency  Frequency
-	GtMaxFrequency  Frequency
+	IaBaseFrequency Frequency `json:"ia_base_frequency"`
+	IaMaxFrequency  Frequency `json:"ia_max_frequency"`
+	GtMaxFrequency  Frequency `json:"gt_max_frequency"`
 
-	PackageTDP     Watts
-	MaxTemperature Temperature
+	PackageTDP     Watts       `json:"package_tdp"`
+	MaxTemperature Temperature `json:"max_temperature"`
 
-	GtAvailable             bool
-	IaEnergyAvailable       bool
-	DramEnergyAvailable     bool
-	PlatformEnergyAvailable bool
+	GtAvailable             bool `json:"gt_available"`
+	IaEnergyAvailable       bool `json:"ia_energy_available"`
+	DramEnergyAvailable     bool `json:"dram_energy_available"`
+	PlatformEnergyAvailable bool `json:"platform_energy_available"`
 }
 
 type IntelPowerGadgetSample struct {
-	Pkg *IntelPowerGadgetPackage
+	Pkg *IntelPowerGadgetPackage `json:"pkg"`
 
-	TimestampStart time.Time
-	TimestampEnd   time.Time
-	Interval       time.Duration
+	TimestampStart time.Time     `json:"timestamp_start"`
+	TimestampEnd   time.Time     `json:"timestamp_end"`
+	Interval       time.Duration `json:"interval"`
 
-	IaFrequency        FrequencyStat
-	IaFrequencyRequest FrequencyStat
-	IaPower            Power
-	IaTemperature      TemperatureStat
-	IaUtilization      Utilization
+	IaFrequency        FrequencyStat   `json:"ia_frequency"`
+	IaFrequencyRequest FrequencyStat   `json:"ia_frequency_request"`
+	IaPower            Power           `json:"ia_power"`
+	IaTemperature      TemperatureStat `json:"ia_temperature"`
+	IaUtilization      Utilization     `json:"ia_utilization"`
 
-	IaCoreFrequency        map[int]FrequencyStat
-	IaCoreFrequencyRequest map[int]FrequencyStat
-	IaCoreTemperature      map[int]TemperatureStat
-	IaCoreUtilization      map[int]Utilization
+	IaCoreFrequency        map[int]FrequencyStat   `json:"ia_core_frequency"`
+	IaCoreFrequencyRequest map[int]FrequencyStat   `json:"ia_core_frequency_request"`
+	IaCoreTemperature      map[int]TemperatureStat `json:"ia_core_temperature"`
+	IaCoreUtilization      map[int]Utilization     `json:"ia_core_utilization"`
 
-	GtFrequency        Frequency
-	GtFrequencyRequest Frequency
-	GtUtilization      Utilization
+	GtFrequency        Frequency   `json:"gt_frequency"`
+	GtFrequencyRequest Frequency   `json:"gt_frequency_request"`
+	GtUtilization      Utilization `json:"gt_utilization"`
 
-	PackagePower Power
+	PackagePower Power `json:"package_power"`
 
-	PlatformPower Power
-	DramPower     Power
+	PlatformPower Power `json:"platform_power"`
+	DramPower     Power `json:"dram_power"`
 
-	PackageTemperature Temperature
-	Tdp                Watts
+	PackageTemperature Temperature `json:"package_temperature"`
+	Tdp                Watts       `json:"tdp"`
 }
 
 func Initialize() bool {
