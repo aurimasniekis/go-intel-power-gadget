@@ -158,14 +158,14 @@ func GetPackage(index int) *IntelPowerGadgetPackage {
 	return result
 }
 
-func GetPackages() (map[int]*IntelPowerGadgetPackage, error) {
+func GetPackages() map[int]*IntelPowerGadgetPackage {
 	result := make(map[int]*IntelPowerGadgetPackage)
 
 	for i := 0; i < NumPackages(); i++ {
 		result[i] = GetPackage(i)
 	}
 
-	return result, nil
+	return result
 }
 
 type SampleId uint64
