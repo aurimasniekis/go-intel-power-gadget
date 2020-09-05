@@ -1,8 +1,8 @@
 package intel_power_gadget
 
 /*
-#cgo CFLAGS: -g -Wall -I/Library/Frameworks/IntelPowerGadget.framework/Headers
-#cgo LDFLAGS: -framework IntelPowerGadget -F/Library/Frameworks
+#cgo darwin CFLAGS: -g -Wall -I/Library/Frameworks/IntelPowerGadget.framework/Headers
+#cgo darwin LDFLAGS: -framework IntelPowerGadget -F/Library/Frameworks
 #include "PowerGadgetLib.h"
 */
 import "C"
@@ -11,29 +11,29 @@ import (
 	"time"
 )
 
+
 type Frequency float32
+type Watts float32
+type Joules float32
+type Temperature float32
+type Utilization float32
+
 type FrequencyStat struct {
 	Mean Frequency `json:"mean"`
 	Min  Frequency `json:"min"`
 	Max  Frequency `json:"max"`
 }
 
-type Watts float32
-type Joules float32
-
-type Power struct {
-	Watts  Watts  `json:"watts"`
-	Joules Joules `json:"joules"`
-}
-
-type Temperature float32
 type TemperatureStat struct {
 	Mean Temperature `json:"mean"`
 	Min  Temperature `json:"min"`
 	Max  Temperature `json:"max"`
 }
 
-type Utilization float32
+type Power struct {
+	Watts  Watts  `json:"watts"`
+	Joules Joules `json:"joules"`
+}
 
 type IntelPowerGadgetPackage struct {
 	PackageNo    int `json:"package_no"`
@@ -99,61 +99,47 @@ func NumPackages() int {
 	return int(num)
 }
 
-func NumCores(iPackage int) int {
-	var result C.int
-
-	C.PG_GetNumCores(C.int(iPackage), &result)
-
-	return int(result)
-}
-
 func GetPackage(index int) *IntelPowerGadgetPackage {
 	result := new(IntelPowerGadgetPackage)
 
-	var numCores C.int
-	var iaBaseFrequency C.double
-	var iaMaxFrequency C.double
-	var gtMaxFrequency C.double
-	var packageTDP C.double
-	var maxTemperature C.uchar
-	var gtAvailable C.bool
-	var iaEnergyAvailable C.bool
-	var dramEnergyAvailable C.bool
-	var platformEnergyAvailable C.bool
+	var intValue C.int
+	var doubleValue C.double
+	var boolValue C.bool
+	var ucharValue C.uchar
 
 	result.PackageNo = index
 
-	C.PG_GetNumCores(C.int(index), &numCores)
-	result.PackageCores = int(numCores)
+	C.PG_GetNumCores(C.int(index), &intValue)
+	result.PackageCores = int(intValue)
 
-	C.PG_IsGTAvailable(C.int(index), &gtAvailable)
-	result.GtAvailable = bool(gtAvailable)
+	C.PG_IsGTAvailable(C.int(index), &boolValue)
+	result.GtAvailable = bool(boolValue)
 
-	C.PG_IsIAEnergyAvailable(C.int(index), &iaEnergyAvailable)
-	result.IaEnergyAvailable = bool(iaEnergyAvailable)
+	C.PG_IsIAEnergyAvailable(C.int(index), &boolValue)
+	result.IaEnergyAvailable = bool(boolValue)
 
-	C.PG_IsDRAMEnergyAvailable(C.int(index), &dramEnergyAvailable)
-	result.DramEnergyAvailable = bool(dramEnergyAvailable)
+	C.PG_IsDRAMEnergyAvailable(C.int(index), &boolValue)
+	result.DramEnergyAvailable = bool(boolValue)
 
-	C.PG_IsPlatformEnergyAvailable(C.int(index), &platformEnergyAvailable)
-	result.PlatformEnergyAvailable = bool(platformEnergyAvailable)
+	C.PG_IsPlatformEnergyAvailable(C.int(index), &boolValue)
+	result.PlatformEnergyAvailable = bool(boolValue)
 
-	C.PG_GetMaxTemperature(C.int(index), &maxTemperature)
-	result.MaxTemperature = Temperature(maxTemperature)
+	C.PG_GetMaxTemperature(C.int(index), &ucharValue)
+	result.MaxTemperature = Temperature(ucharValue)
 
-	C.PG_GetIABaseFrequency(C.int(index), &iaBaseFrequency)
-	result.IaBaseFrequency = Frequency(iaBaseFrequency)
+	C.PG_GetIABaseFrequency(C.int(index), &doubleValue)
+	result.IaBaseFrequency = Frequency(doubleValue)
 
-	C.PG_GetIAMaxFrequency(C.int(index), &iaMaxFrequency)
-	result.IaMaxFrequency = Frequency(iaMaxFrequency)
+	C.PG_GetIAMaxFrequency(C.int(index), &doubleValue)
+	result.IaMaxFrequency = Frequency(doubleValue)
 
 	if result.GtAvailable {
-		C.PG_GetGTMaxFrequency(C.int(index), &gtMaxFrequency)
-		result.GtMaxFrequency = Frequency(gtMaxFrequency)
+		C.PG_GetGTMaxFrequency(C.int(index), &doubleValue)
+		result.GtMaxFrequency = Frequency(doubleValue)
 	}
 
-	C.PG_GetTDP(C.int(index), &packageTDP)
-	result.PackageTDP = Watts(packageTDP)
+	C.PG_GetTDP(C.int(index), &doubleValue)
+	result.PackageTDP = Watts(doubleValue)
 
 	return result
 }
